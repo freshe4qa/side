@@ -122,7 +122,7 @@ EOF
 
 # reset
 sided tendermint unsafe-reset-all --home $HOME/.nibid --keep-addr-book 
-#curl https://snapshots-testnet.nodejumper.io/nibiru-testnet/nibiru-itn-3_2023-11-02.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.nibid
+curl https://testnet-files.itrocket.net/side/snap_side.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.sidechain
 
 # start service
 sudo systemctl daemon-reload
