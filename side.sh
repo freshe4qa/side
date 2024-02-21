@@ -83,7 +83,7 @@ wget -O $HOME/.sidechain/config/addrbook.json "https://raw.githubusercontent.com
 sed -i -e "s|^minimum-gas-prices *=.*|minimum-gas-prices = \"0.005uside\"|" $HOME/.sidechain/config/app.toml
 
 # set peers and seeds
-SEEDS=""
+SEEDS="9c14080752bdfa33f4624f83cd155e2d3976e303@side-testnet-seed.itrocket.net:45656"
 PEERS="bbbf623474e377664673bde3256fc35a36ba0df1@side-testnet-peer.itrocket.net:45656,2ca1a2f1170df5ecb55dcae5e976d6dbb85e3b6b@65.109.92.148:61456,5e0b5f26e4c069fbcaac1ae4b22aba151e463a52@65.108.79.241:60856,16cebdbf581b41757e66a8b5123db0248acf2ecc@207.244.230.15:26656,316af403caf9263cf55c721ae33b0a8e0ae27a8d@109.123.238.54:26656,a442702f898c77bd1d09ffbbc683946f437c2ac1@209.145.55.218:56656,91b6c3d622e28752c428091ca47eb463b63d14de@162.55.4.42:11356,08f006100a637b2fea09eab6c124949fe437af3e@37.27.69.161:36656,3e3c20f6881e8301b318d100d6cc37ac2cfcfa04@37.27.27.203:26656,47569def38066753b1d2f1193695ee7fe86571da@159.69.86.235:26656,656004608d89d1fd96b6118d877c3d11c26cd8ba@195.201.241.107:56146"
 sed -i -e "s/^seeds *=.*/seeds = \"$SEEDS\"/; s/^persistent_peers *=.*/persistent_peers = \"$PEERS\"/" $HOME/.sidechain/config/config.toml
 
