@@ -76,15 +76,15 @@ sided config keyring-backend test
 sided init $NODENAME --chain-id $SIDE_CHAIN_ID
 
 # download genesis and addrbook
-curl -Ls https://snapshots.moonbridge.team/testnet/side/genesis.json > $HOME/.side/config/genesis.json
-curl -Ls https://snapshots.moonbridge.team/testnet/side/addrbook.json > $HOME/.side/config/addrbook.json
+curl -L https://snapshots-testnet.nodejumper.io/side-testnet/genesis.json > $HOME/.side/config/genesis.json
+curl -L https://snapshots-testnet.nodejumper.io/side-testnet/addrbook.json > $HOME/.side/config/addrbook.json
 
 # set minimum gas price
 sed -i -e "s|^minimum-gas-prices *=.*|minimum-gas-prices = \"0.005uside\"|" $HOME/.side/config/app.toml
 
 # set peers and seeds
 SEEDS="693bdfec73a81abddf6f758aa49321de48456a96@13.231.67.192:26656"
-PEERS="bbbf623474e377664673bde3256fc35a36ba0df1@side-testnet-peer.itrocket.net:45656,2ca1a2f1170df5ecb55dcae5e976d6dbb85e3b6b@65.109.92.148:61456,5e0b5f26e4c069fbcaac1ae4b22aba151e463a52@65.108.79.241:60856,16cebdbf581b41757e66a8b5123db0248acf2ecc@207.244.230.15:26656,316af403caf9263cf55c721ae33b0a8e0ae27a8d@109.123.238.54:26656,a442702f898c77bd1d09ffbbc683946f437c2ac1@209.145.55.218:56656,91b6c3d622e28752c428091ca47eb463b63d14de@162.55.4.42:11356,08f006100a637b2fea09eab6c124949fe437af3e@37.27.69.161:36656,3e3c20f6881e8301b318d100d6cc37ac2cfcfa04@37.27.27.203:26656,47569def38066753b1d2f1193695ee7fe86571da@159.69.86.235:26656,656004608d89d1fd96b6118d877c3d11c26cd8ba@195.201.241.107:56146"
+PEERS="2803ac0536102d14d1231ee2ba2401220e6e5161@188.40.66.173:26356,5ed59d1430a0c99660233b03b614ca773e41d86d@154.38.169.8:26656,6202f202f52aca046f749ce8fc58ebf06a01e272@65.108.200.40:49656,520f98acd537007a9a4e3c640873d6c0cb489af7@161.97.83.250:26656,0677147b29e230036b1f4cf345e41b2e4f8b9a53@95.217.148.179:26656,e1752865a89e132f7877bae1adae5b39b6f50a9f@88.198.27.51:61056,07fd0d50993731aa3542bdec151f1c021a4c05ce@65.21.109.69:26656,907b2fe62d44e4692befce1954280647e03cd9e0@136.243.75.46:26656,70e3c646a0bd0bce52714a5d6b27cf1604405167@167.86.67.112:26656,62b28c726dbcf81ff3227af3f3da1a9cec7b2898@65.21.113.10:60856,ddfe330127fcf8a6560fa24015c28c0a29148ada@65.108.143.210:45656,e085e0a039b339afd4bb013f4533a33b34a2308b@162.55.90.36:11356,e2c6705ad3e801dd4b4e42b24df3aee4b12116e9@144.76.138.156:11356,56927fc111f04645062a3365991569e8c79e6ed6@135.181.116.152:44656,e70de8ac13045a059fb031e9e3d035252fb130eb@80.253.246.64:26656,afc5131919434d10d6912b1bb0048b887323b8f8@149.102.132.207:48656,45f2a80670a371eee2d15be7b13a607406b4b76f@23.88.70.109:11356,0d0cfeabef50825e217028f3549c437e8212d67d@135.181.112.166:11356,c3df7bc8a69f1d49186f53a51d799ebd2bf56952@65.108.206.118:46656"
 sed -i -e "s/^seeds *=.*/seeds = \"$SEEDS\"/; s/^persistent_peers *=.*/persistent_peers = \"$PEERS\"/" $HOME/.side/config/config.toml
 
 # disable indexing
@@ -121,9 +121,8 @@ WantedBy=multi-user.target
 EOF
 
 # reset
-sided tendermint unsafe-reset-all --home $HOME/.sided --keep-addr-book 
-curl -o - -L https://snapshots.moonbridge.team/testnet/side/snapshot_latest.tar.lz4 | lz4 -dc - | tar -x -C $HOME/.side
-[[ -f $HOME/.side/data/upgrade-info.json ]] && cp $HOME/.side/data/upgrade-info.json $HOME/.side/cosmovisor/genesis/upgrade-info.json
+sided tendermint unsafe-reset-all --home $HOME/.side --keep-addr-book
+curl https://snapshots-testnet.nodejumper.io/side-testnet/side-testnet_latest.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.side
 
 # start service
 sudo systemctl daemon-reload
