@@ -41,7 +41,7 @@ fi
 if [ ! $WALLET ]; then
 	echo "export WALLET=wallet" >> $HOME/.bash_profile
 fi
-echo "export SIDE_CHAIN_ID=side-testnet-2" >> $HOME/.bash_profile
+echo "export SIDE_CHAIN_ID=side-testnet-3" >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
 # update
@@ -63,9 +63,10 @@ go version
 fi
 
 # download binary
-cd $HOME
-git clone https://github.com/sideprotocol/side && cd side
-git checkout v0.6.0
+cd && rm -rf sidechain
+git clone https://github.com/sideprotocol/sidechain.git
+cd sidechain
+git checkout v0.7.0-rc2
 make install
 
 # config
@@ -83,8 +84,8 @@ curl -L https://snapshots-testnet.nodejumper.io/side-testnet/addrbook.json > $HO
 sed -i -e "s|^minimum-gas-prices *=.*|minimum-gas-prices = \"0.005uside\"|" $HOME/.side/config/app.toml
 
 # set peers and seeds
-SEEDS="693bdfec73a81abddf6f758aa49321de48456a96@13.231.67.192:26656"
-PEERS="2803ac0536102d14d1231ee2ba2401220e6e5161@188.40.66.173:26356,5ed59d1430a0c99660233b03b614ca773e41d86d@154.38.169.8:26656,6202f202f52aca046f749ce8fc58ebf06a01e272@65.108.200.40:49656,520f98acd537007a9a4e3c640873d6c0cb489af7@161.97.83.250:26656,0677147b29e230036b1f4cf345e41b2e4f8b9a53@95.217.148.179:26656,e1752865a89e132f7877bae1adae5b39b6f50a9f@88.198.27.51:61056,07fd0d50993731aa3542bdec151f1c021a4c05ce@65.21.109.69:26656,907b2fe62d44e4692befce1954280647e03cd9e0@136.243.75.46:26656,70e3c646a0bd0bce52714a5d6b27cf1604405167@167.86.67.112:26656,62b28c726dbcf81ff3227af3f3da1a9cec7b2898@65.21.113.10:60856,ddfe330127fcf8a6560fa24015c28c0a29148ada@65.108.143.210:45656,e085e0a039b339afd4bb013f4533a33b34a2308b@162.55.90.36:11356,e2c6705ad3e801dd4b4e42b24df3aee4b12116e9@144.76.138.156:11356,56927fc111f04645062a3365991569e8c79e6ed6@135.181.116.152:44656,e70de8ac13045a059fb031e9e3d035252fb130eb@80.253.246.64:26656,afc5131919434d10d6912b1bb0048b887323b8f8@149.102.132.207:48656,45f2a80670a371eee2d15be7b13a607406b4b76f@23.88.70.109:11356,0d0cfeabef50825e217028f3549c437e8212d67d@135.181.112.166:11356,c3df7bc8a69f1d49186f53a51d799ebd2bf56952@65.108.206.118:46656"
+SEEDS="6decdc5565bf5232cdf5597a7784bfe828c32277@158.220.126.137:11656,e9ee4fb923d5aab89207df36ce660ff1b882fc72@136.243.33.177:21656,9c14080752bdfa33f4624f83cd155e2d3976e303@side-testnet-seed.itrocket.net:45656"
+PEERS="ea6cc33fe12acd75f42b1b9b4aafb0bde6911d41@176.9.139.150:26656,e9ee4fb923d5aab89207df36ce660ff1b882fc72@136.243.33.177:21656,2a6d31c23160e49db1f03a884dc7b9602fffe895@176.9.126.85:30004,e52da5e5fecf65abf9d7a3135196240f065deed3@207.180.212.200:26656,dcb4494c545f450ba38d60cfcba6c92dc55ebef2@80.85.242.149:34656,90913388e45b45b2838db389f780d8b5add90aa4@65.109.23.55:21306,53e164d1b28ba845da0cec828b4f69fe1e8bf78a@65.108.153.66:26656,00170c0c23c3e97c740680a7f881511faf68289a@202.182.119.24:26656,860604d5cfd972a892b2defe50ae5ef1cec49f1e@78.46.103.246:26656,64311e24f75b6fb43b85042e6350bc53366cf218@144.76.111.38:46656,69b93c5cbfc23c018662b7dadca3a9ea4509b01e@95.217.87.81:46656,501081929e6e676229da5d67415a1a2094b88f75@65.109.101.254:26656,7c55344ddca1b3d8f3afbaf6c5976f96c5b4a0d2@135.181.138.178:46656,9ae9fe5f81d2ae0c9fed8cc51c892330f8cf154b@213.199.39.207:11656,623a1ead3eeb2e4171e013959192aa9808626986@213.199.61.251:26656,5baf6e065f8a0cc2cbe78e838fa5dc54be3eb70d@65.109.92.163:1020,4a02056469cdfd852fe736719b56ae22e84d729e@95.217.200.98:26656,996c8e0d0c331c19984c543f6a3ec8520131fb7e@95.164.3.79:34656,ba06a50cb8a80da31cadf1f148607304437c3005@139.59.100.143:26656,85cfebdb59615a1bf427106a32b30c91568fd52a@135.181.216.54:3450"
 sed -i -e "s/^seeds *=.*/seeds = \"$SEEDS\"/; s/^persistent_peers *=.*/persistent_peers = \"$PEERS\"/" $HOME/.side/config/config.toml
 
 # disable indexing
@@ -108,14 +109,14 @@ sed -i -e "s/prometheus = false/prometheus = true/" $HOME/.side/config/config.to
 # create service
 sudo tee /etc/systemd/system/sided.service > /dev/null << EOF
 [Unit]
-Description=Side Node
+Description=Side node service
 After=network-online.target
 [Service]
 User=$USER
 ExecStart=$(which sided) start
 Restart=on-failure
 RestartSec=10
-LimitNOFILE=10000
+LimitNOFILE=65535
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -151,7 +152,7 @@ sided tx staking create-validator \
 --amount=10000000uside \
 --pubkey=$(sided tendermint show-validator) \
 --moniker="$NODENAME" \
---chain-id=side-testnet-2 \
+--chain-id=side-testnet-3 \
 --commission-rate=0.1 \
 --commission-max-rate=0.2 \
 --commission-max-change-rate=0.05 \
