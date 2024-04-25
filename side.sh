@@ -71,7 +71,7 @@ make install
 
 # config
 sided config chain-id $SIDE_CHAIN_ID
-sided config keyring-backend test
+sided config keyring-backend os
 
 # init
 sided init $NODENAME --chain-id $SIDE_CHAIN_ID
@@ -149,7 +149,7 @@ break
 
 "Create Validator")
 sided tx staking create-validator \
---amount=10000000uside \
+--amount=9000000uside \
 --pubkey=$(sided tendermint show-validator) \
 --moniker="$NODENAME" \
 --chain-id=side-testnet-3 \
@@ -158,6 +158,9 @@ sided tx staking create-validator \
 --commission-max-change-rate=0.05 \
 --min-self-delegation=1 \
 --from=wallet \
+--node=https://testnet-rpc.side.one:443 \ 
+--fees=80uside \
+--gas=300000 \
 -y
   
 break
